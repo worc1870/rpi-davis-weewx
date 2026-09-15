@@ -6,6 +6,8 @@
 - Raspberry Pi OS Lite
 - 32G Micro SD Card
 
+An Industrial Grade Micro SD Card is recommended. It is affected less by temperature extremes and does not degrade by constantly writing to it over a long time period.
+
 OS Details:
 - Distributor ID:	Debian
 - Description:	Debian GNU/Linux 13 (trixie)
