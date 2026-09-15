@@ -1,0 +1,86 @@
+# Davis ISS -> WeeWX with RTL-SDR on Raspberry Pi 4
+
+A working reference configuration for receiving a Davis Instruments Integrated Sensor Suite (ISS) with an RTL-SDR dongle, decoding it with `rtldavis`, archiving the observations with WeeWX, and writing one-minute observations to monthly CSV files.
+
+## System overview
+
+```text
+Davis ISS
+   |
+   | 868 MHz (EU configuration)
+   v
+RTL-SDR dongle
+   |
+   v
+rtldavis
+   |
+   v
+weewx-rtldavis
+   |
+   v
+WeeWX 5.5.0
+   +---- SQLite archive: /var/lib/weewx/weewx.sdb
+   |
+   +---- Monthly CSV: /var/lib/weewx/csv/weather-YYYY-MM.csv
+```
+
+## Current working configuration
+
+- Hardware: Raspberry Pi 4 Model B
+- OS: Raspberry Pi OS Lite
+- WeeWX: 5.5.0
+- Python: 3.13.5
+- Weather station: Davis ISS
+- SDR decoder: [`lheijst/rtldavis`](https://github.com/lheijst/rtldavis)
+- WeeWX driver: [`lheijst/weewx-rtldavis`](https://github.com/lheijst/weewx-rtldavis)
+- Region: EU
+- ISS channel: 7
+- Archive interval: 60 seconds
+- WeeWX database units: METRICWX
+- Database: SQLite
+- CSV rotation: one file per calendar month
+- CSV timezone: Europe/London
+
+## Repository contents
+
+- [`docs/hardware.md`](docs/hardware.md) - hardware and station notes
+- [`docs/raspberry-pi-setup.md`](docs/raspberry-pi-setup.md) - Raspberry Pi preparation
+- [`docs/rtldavis-setup.md`](docs/rtldavis-setup.md) - rtldavis and WeeWX driver setup
+- [`docs/weewx-setup.md`](docs/weewx-setup.md) - WeeWX configuration and service setup
+- [`docs/csv-logging.md`](docs/csv-logging.md) - CSV logger installation and file format
+- [`docs/troubleshooting.md`](docs/troubleshooting.md) - common problems encountered during the build
+- [`config/weewx.conf.example`](config/weewx.conf.example) - sanitized example configuration
+- [`weewx/csvlogger.py`](weewx/csvlogger.py) - custom WeeWX CSV service
+
+## CSV output
+
+Each archive record produces one CSV row. Files are rotated monthly:
+
+```text
+weather-2026-09.csv
+weather-2026-10.csv
+weather-2026-11.csv
+```
+
+The CSV uses METRICWX values and a slash-free, ASCII-friendly header convention:
+
+```text
+dateTime,dateTimeISO,interval,units,outTemp_C,outHumidity_pct,dewpoint_C,heatindex_C,windchill_C,windSpeed_m_per_s,windGust_m_per_s,windDir_deg,windGustDir_deg,windrun_km,rain_mm,rainRate_mm_per_h,radiation_W_per_m2,UV_index
+```
+
+## Important configuration note
+
+The live installation changed WeeWX from the default US archive units to METRICWX by setting:
+
+```ini
+[StdConvert]
+    target_unit = METRICWX
+```
+
+This project deliberately does that **before collecting new archive data**. Do not change the target unit on an existing mixed-unit database without following WeeWX's database/unit migration guidance.
+
+## Acknowledgements
+
+This project builds on WeeWX and the work in `rtldavis` and `weewx-rtldavis` by `lheijst`.
+
+The custom CSV service in this repository is intended to sit alongside those projects; it does not replace the SDR decoder or WeeWX driver.

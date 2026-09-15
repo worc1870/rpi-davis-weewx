@@ -1,0 +1,17 @@
+# WeeWX runtime data
+*.sdb
+*.sqlite
+*.db
+*.log
+
+# Generated weather CSV files
+weather-*.csv
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Local/editor files
+.vscode/
+.idea/
+*.swp
