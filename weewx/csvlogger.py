@@ -1,6 +1,7 @@
 # WeeWX CSV archive logger for WeeWX 5.x
 # Writes one CSV row for each NEW_ARCHIVE_RECORD event.
 # Values are expected to already be in METRICWX because StdConvert is set to METRICWX.
+# on the RPi_4B this file is located at /etc/weewx/bin/user/csvlogger.py
 
 import csv
 import os

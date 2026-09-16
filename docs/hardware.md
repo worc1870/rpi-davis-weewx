@@ -21,7 +21,7 @@ OS Details:
 - includes battery
 
 
-## RTL-SDR USB dongle and antenna setup
+## RTL-SDR USB dongle and antenna
 
 - RTL-SDR Blog V3 R860 RTL2832U 1PPM TCXO SMA Software Defined Radio (Dongle Only) (Black) (USB-C)
 - LPRS WR868 Stubby Antenna with SMA Male Connector, ISM Band (RS Stock No.: 703-2978; Mfr. Part No.: WR868; Brand: LPRS)
@@ -38,8 +38,8 @@ The working configuration uses:
 The current ISS installation does not provide barometric pressure to WeeWX. Consequently, `pressure`, `barometer`, and `altimeter` are not populated by the present ISS data stream. A future addition is a local I2C pressure sensor connected directly to the Raspberry Pi. That sensor should be integrated into WeeWX as a separate data source rather than modifying `rtldavis`.
 
 
-## Other useful hardware
+## Other useful components
 
 - Ethernet cable for direct communication with laptop (Ubuntu 24.02 LTS)
 - Ethernet to USB-C adaptor (StarTech.com, US1GC30W)
-- USB-C card reader for flashing the OS onto the Micro SD card.
+- USB-C card reader for flashing the OS onto the Micro SD card

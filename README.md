@@ -62,7 +62,7 @@ weather-2026-10.csv
 weather-2026-11.csv
 ```
 
-The CSV uses METRICWX values and a slash-free, ASCII-friendly header convention:
+The CSV uses METRICWX values, ASCII-friendly headers:
 
 ```text
 dateTime,dateTimeISO,interval,units,outTemp_C,outHumidity_pct,dewpoint_C,heatindex_C,windchill_C,windSpeed_m_per_s,windGust_m_per_s,windDir_deg,windGustDir_deg,windrun_km,rain_mm,rainRate_mm_per_h,radiation_W_per_m2,UV_index

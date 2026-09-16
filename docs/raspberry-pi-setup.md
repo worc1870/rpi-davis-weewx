@@ -346,7 +346,7 @@ The rtldavis installation is in parts based on the instructions from [here](http
 
 ## Configure rtldavis to work with WeeWX
 
-- Install weewx-rtldavis driver extension
+- Install `weewx-rtldavis` driver extension
     ```bash
     sudo systemctl stop weewx   # make sure WeeWX stopped
     sudo weectl extension install https://github.com/lheijst/weewx-rtldavis/archive/master.zip
@@ -372,7 +372,7 @@ The rtldavis installation is in parts based on the instructions from [here](http
 You may have to move the binary file to `/usr/local/bin/rtldavis`.
 
 
-## Testing frequency hopping and Frequency Offset
+## Testing frequency hopping and frequency offset
 
 In the European versions of Davis Vantage weather stations, the ISS does not transmit continuously on one fixed radio frequency. Instead, it repeatedly changes (or hops) between a small set of frequencies in the 868 MHz band. The ISS uses Frequency-Hopping Spread Spectrum (FHSS) technology. Because the ISS hopes every 2.5 seconds to the next frequency is why the RTL-SDR receiver cannot simply be tuned to one frequency and left there.
 
@@ -491,22 +491,43 @@ Exact sample rate is: 268800.001367 Hz
 This now confirms that the RTL-SDR dongle receives the coded packets from the ISS. Next step is to pass those packets on to WeeWX for decoding and saving into a database.
 
 
+## Save data to CSV file
 
+WeeWX does not have a straight forward export fuction to save data into a CSV file.
 
+My first attempt to use `weewx-csv` extension written by GitHub user [matthewwall](https://github.com/matthewwall/weewx-csv) in about 2021 failed. The code had trouble reading the data correctly from latest version of WeeWX.
 
+May second attempt to use WeeWX's internal standard reporting system using the `CheetahGenerator` also failed. It never produced any CSV file. Perhaps I missed something.
 
+I opted for a self-contained external service that uses `sqlite3` to query the database, extract the data and save them to a CSV file. The service is runs based on a Python script named `csvlogger.py`. The `/etc/weewx/weewx.conf` needs to be configured correctly to make the service work. Data are writting every minute (or other interval, depends on settings). One file per month is generated. Data are appended if file file already exist on WeeWX start.
 
+- set units correctly in `/etc/weewx/weewx.conf`
+    ```text
+    target_unit = METRICWX    # Options are 'US', 'METRICWX', or 'METRIC'
+    ```
+- Add the CSVLogger service to `/etc/weewx/weewx.conf`
+    ```text
+    [CSVLogger] 
+        filename = /var/lib/weewx/csv/weather-{year}-{month}.csv 
+        timezone = Europe/London 
+        decimals = 3 
+    ```
+- Make sure the CSVLogger service is correctly setup as a service in `/etc/weewx/weewx.conf`
+    ```text
+    archive_services = weewx.engine.StdArchive, user.csvlogger.CSVLogger
+    ```
+- Set the archive interval in seconds in `/etc/weewx/weewx.conf`
+    ```text
+    archive_interval = 60   # in seconds
+    ```
+- Set up Python script for data logging
+    ```bash
+    sudo cp csvlogger.py /etc/weewx/bin/user/csvlogger.py
+    sudo chown root:root /etc/weewx/bin/user/csvlogger.py 
+    sudo chmod 644 /etc/weewx/bin/user/csvlogger.py 
+    ```
 
-
-
-
-
-
-
-
-
-
-
+Restart WeeWX and check that 
 
 
 ## Check the archive database
@@ -515,7 +536,7 @@ This now confirms that the RTL-SDR dongle receives the coded packets from the IS
 sudo sqlite3 /var/lib/weewx/weewx.sdb "PRAGMA table_info(archive);"
 ```
 
-The documented installation uses:
+The documented installation uses the following database.
 
 ```text
 /var/lib/weewx/weewx.sdb
@@ -525,15 +546,19 @@ for the SQLite archive database.
 
 ## Service startup
 
-WeeWX is run as the supplied systemd service. Enable it so that it starts automatically at boot:
+WeeWX is run as the supplied systemd service. Enable it so that it starts automatically at boot.
 
 ```bash
 sudo systemctl enable weewx
 ```
 
-Check:
+Check
 
 ```bash
 systemctl is-enabled weewx
 systemctl status weewx
+```
+Reboot system to see if it works.
+```bash
+sudo reboot
 ```
