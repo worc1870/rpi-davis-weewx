@@ -43,6 +43,7 @@ WeeWX 5.5.0
 
 ## Repository contents
 
+- [`docs/flash_os.md`](docs/flash_os.md) - flash Raspberry Pi OS Lite (64-bit) to micro SD card
 - [`docs/hardware.md`](docs/hardware.md) - hardware and station notes
 - [`docs/raspberry-pi-setup.md`](docs/raspberry-pi-setup.md) - Raspberry Pi preparation
 - [`docs/rtldavis-setup.md`](docs/rtldavis-setup.md) - rtldavis and WeeWX driver setup
