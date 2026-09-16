@@ -247,7 +247,7 @@ The setup involves
 
 ## Install WeeWX
 
-WeeWX is software package for logging weather station data and creating graphs. We will use it for logging and export to CSV only. For installation I followed steps from https://www.weewx.com/docs/5.5/quickstarts/debian/.
+WeeWX is software package for logging weather station data and creating graphs. We will use it for logging data only. For the installation I followed steps from [here](https://www.weewx.com/docs/5.5/quickstarts/debian/).
 
 - Tell your system to trust weewx.com.
     ```bash
@@ -272,11 +272,13 @@ WeeWX is software package for logging weather station data and creating graphs. 
     - Unit system: metricwx
     - Weather station type: Simulation 
 
-    Finish with the following checks.
+    Useful commands for checking that WeeWX is working.
     ```bash
-    sudo systemctl stop weewx    # stop simulator
     sudo systemctl status weewx   # check status
-    sudo journalctl -u weewx   # check system log
+    sudo systemctl start weewx    # stop weewx
+    sudo systemctl restart weewx    # restart weewx
+    sudo systemctl stop weewx    # stop weewx
+    sudo journalctl -u weewx   # check system log for weewx
     ```
 
 - Verify WeeWX
@@ -292,6 +294,7 @@ WeeWX is software package for logging weather station data and creating graphs. 
     WeeWX 5.5.0
     Python 3.13.5
     ```
+
 
 ## Install rtldavis
 
@@ -339,6 +342,51 @@ The rtldavis installation is in parts based on the instructions from [here](http
     go install -v .     # should not show any errors
     ~/go/bin/rtldavis -v     # check if the binary works
     ```
+
+
+## Configure rtldavis to work with WeeWX
+
+- Install weewx-rtldavis driver extension
+    ```bash
+    sudo systemctl stop weewx   # make sure WeeWX stopped
+    sudo weectl extension install https://github.com/lheijst/weewx-rtldavis/archive/master.zip
+    ```
+- Configure WeeWX
+    ```bash
+    sudo nano /etc/weewx/weewx.conf
+    ```
+    Add the following lines at the end of the file.
+    ```text
+    [Rtldavis]
+        # Change this path to match exactly where your compiled rtldavis binary resides
+        # pass -tf EU and -tr 64 outside the command as channel and iss_channel
+        cmd = /usr/local/bin/rtldavis -gain 40 -fc 50000
+
+        # Let the driver handle the region and your Channel 7 configuration natively
+        channel = EU
+        iss_channel = 7
+
+        driver = user.rtldavis
+
+    ```
+You may have to move the binary file to `/usr/local/bin/rtldavis`.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
