@@ -83,15 +83,3 @@ and included in the service list:
     [[Services]]
         archive_services = weewx.engine.StdArchive, user.csvlogger.CSVLogger
 ```
-
-## Disable the previous Cheetah CSV attempt
-
-The earlier `CleanCSV` report should be disabled or removed:
-
-```ini
-[[CleanCSV]]
-    skin = CSV
-    enable = false
-```
-
-The native CSV service is independent of Cheetah reporting.

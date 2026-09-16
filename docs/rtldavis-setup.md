@@ -7,13 +7,7 @@ This project uses:
 
 ## rtldavis command
 
-The working configuration uses:
-
-```text
-/usr/local/bin/rtldavis -gain 40 -fc 50000 -tf EU -tr 64
-```
-
-The equivalent configuration is represented in `weewx.conf` as:
+The working configuration as contained in `weewx.conf`:
 
 ```ini
 [Rtldavis]

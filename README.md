@@ -77,10 +77,10 @@ The live installation changed WeeWX from the default US archive units to METRICW
     target_unit = METRICWX
 ```
 
-This project deliberately does that **before collecting new archive data**. Do not change the target unit on an existing mixed-unit database without following WeeWX's database/unit migration guidance.
+This project deliberately does that **before collecting new archive data**. Do not change the target unit on an existing mixed-unit database without following WeeWX's database/unit migration guidance.=
 
 ## Acknowledgements
 
 This project builds on WeeWX and the work in `rtldavis` and `weewx-rtldavis` by `lheijst`.
 
-The custom CSV service in this repository is intended to sit alongside those projects; it does not replace the SDR decoder or WeeWX driver.
+The custom CSV service in this repository is intended to sit alongside those projects; it is independed of and does not replace the SDR decoder or WeeWX archiving.

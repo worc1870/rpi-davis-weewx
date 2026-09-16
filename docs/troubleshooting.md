@@ -27,10 +27,6 @@ On the documented setup the directory is owned by `weewx:weewx`:
 sudo chown -R weewx:weewx /var/lib/weewx/csv
 ```
 
-## `weeutil.logger` has no attribute `logdbg`
-
-An earlier version of the custom CSV logger used a non-existent `weeutil.logger.logdbg()` call. The current `weewx/csvlogger.py` uses Python's standard `logging` interface instead.
-
 ## WeeWX starts and then stops
 
 Inspect:
@@ -63,4 +59,4 @@ sudo sqlite3 /var/lib/weewx/weewx.sdb \
 
 ## Empty pressure fields
 
-The current Davis ISS data stream does not provide barometric pressure, so `pressure`, `barometer`, and `altimeter` were empty in the tested records. This is a hardware/data-source issue, not a CSV logging problem.
+The current Davis ISS data stream does not provide barometric pressure, so `pressure`, `barometer`, and `altimeter` were empty in the tested records. This is a hardware data-source issue, not a CSV logging problem.
