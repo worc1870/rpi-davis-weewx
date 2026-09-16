@@ -49,8 +49,8 @@ WeeWX 5.5.0
 - [`docs/weewx-setup.md`](docs/weewx-setup.md) - WeeWX configuration and service setup
 - [`docs/csv-logging.md`](docs/csv-logging.md) - CSV logger installation and file format
 - [`docs/troubleshooting.md`](docs/troubleshooting.md) - common problems encountered during the build
-- [`config/weewx.conf.example`](config/weewx.conf.example) - sanitized example configuration
-- [`weewx/csvlogger.py`](weewx/csvlogger.py) - custom WeeWX CSV service
+- [`weewx/weewx.conf`](config/weewx.conf.example) - WeeWX example configuration
+- [`weewx/csvlogger.py`](weewx/csvlogger.py) - custom WeeWX CSV logging service Python script
 
 ## CSV output
 
