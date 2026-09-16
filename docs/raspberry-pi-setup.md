@@ -245,19 +245,104 @@ The setup involves
     If that runs without “permission denied”, the udev rules are fine.
 
 
-## Verify WeeWX
+## Install WeeWX
 
-```bash
-weectl --version
-python3 --version
-```
+WeeWX is software package for logging weather station data and creating graphs. We will use it for logging and export to CSV only. For installation I followed steps from https://www.weewx.com/docs/5.5/quickstarts/debian/.
 
-Expected versions in the documented installation:
+- Tell your system to trust weewx.com.
+    ```bash
+    sudo apt update
+    sudo apt install -y wget gnupg
+    wget -qO - https://weewx.com/keys.html | sudo gpg --dearmor --output /etc/apt/trusted.gpg.d/weewx.gpg
+    ```
+- Tell apt where to find the WeeWX repository.
+    ```bash
+    echo "deb [arch=all] https://weewx.com/apt/python3 buster main" | sudo tee /etc/apt/sources.list.d/weewx.list
+    ```
+- Install WeeWX
+    ```bash
+    sudo apt update
+    sudo apt install weewx
+    ```
 
-```text
-WeeWX 5.5.0
-Python 3.13.5
-```
+    During the setup I used the following settings:
+    - Location: Oxford Test
+    - Lat/Lon: 51.75889, -1.25375
+    - Altitude: 63 m
+    - Unit system: metricwx
+    - Weather station type: Simulation 
+
+    Finish with the following checks.
+    ```bash
+    sudo systemctl stop weewx    # stop simulator
+    sudo systemctl status weewx   # check status
+    sudo journalctl -u weewx   # check system log
+    ```
+
+- Verify WeeWX
+
+    ```bash
+    weectl --version
+    python3 --version
+    ```
+
+    Expected versions in the documented installation:
+
+    ```text
+    WeeWX 5.5.0
+    Python 3.13.5
+    ```
+
+## Install rtldavis
+
+The rtldavis project is the implementation of a receiver for Davis wireless weather stations that makes use of RTL-SDR dongles. It was originally coded up by GitHub user [bemasher](https://github.com/bemasher/rtldavis) in 2015. We here use a modified fork of the original from GitHub user [lheijst](https://github.com/lheijst/rtldavis) from around 2019. It is the preferred fork for Davis stations sold in European that transmit at 868.0–868.6 MHz. It incorporates explicit tuning adjustments (-tf and -tr frequency options) required to lock onto shifting EU signals.
+
+The rtldavis installation is in parts based on the instructions from [here](https://www.instructables.com/Davis-Van-ISS-Weather-Station-With-Raspbe/).
+
+- Install packes needed
+    ```bash
+        sudo apt-get install golang git cmake
+    ```
+- Install `librtlsdr` from source
+    ```bash
+    git clone https://github.com/steve-m/librtlsdr.git
+    cd librtlsdr
+    mkdir build
+    cd build
+    cmake ../ -DINSTALL_UDEV_RULES=ON
+    make
+    sudo make install
+    sudo ldconfig
+    ```
+- Add some path to your profile
+    ```bash
+    sudo nano ~/.profile  
+    ```
+    Add the following lines at the end of the file
+    ```text
+    export GOROOT=/usr/lib/go
+    export GOPATH=$HOME
+    export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+    ```
+    Source profile
+    ```bash
+    source ~/.profile
+    ```
+- Get the `rtldavis` package
+    ```bash
+    git clone https://github.com/lheijst/rtldavis
+    cd rtldavis
+    go mod init github.com/lheijst/rtldavis  # creates temporary go.mod
+    go get -d ./...    # some dependencies incompatible! --> remove vendor
+    rm -rf vendor
+    go mod tidy
+    go install -v .     # should not show any errors
+    ~/go/bin/rtldavis -v     # check if the binary works
+    ```
+
+
+
+
 
 ## Check the archive database
 
