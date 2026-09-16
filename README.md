@@ -1,4 +1,4 @@
-# Davis ISS -> WeeWX with RTL-SDR on Raspberry Pi 4
+# Davis ISS -> WeeWX with RTL-SDR on Raspberry Pi Model 4B
 
 A working reference configuration for receiving a Davis Instruments Integrated Sensor Suite (ISS) with an RTL-SDR dongle, decoding it with `rtldavis`, archiving the observations with WeeWX, and writing one-minute observations to monthly CSV files.
 
