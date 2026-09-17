@@ -43,3 +43,4 @@ The current ISS installation does not provide barometric pressure to WeeWX. Cons
 - Ethernet cable for direct communication with laptop (Ubuntu 24.02 LTS)
 - Ethernet to USB-C adaptor (StarTech.com, US1GC30W)
 - USB-C card reader for flashing the OS onto the Micro SD card
+- Micro SD card (I used 32G); industrial grade Micro SD card would be preferred
