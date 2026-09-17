@@ -4,19 +4,30 @@ This document records the software-side setup used on the Raspberry Pi. Keep ins
 
 ## Operating system
 
-Raspberry Pi OS Lite on a Raspberry Pi 4 Model B.
+`Raspberry Pi OS Lite` on a `Raspberry Pi 4 Model B`.
 
 
 ## Connecting RPi 4B to laptop running Ubuntu 24.04 LTS
 
-1. Connect a standard ethernet cable between your Pi 4B and the USB-C adapter on your Ubuntu laptop.
-2. Open your Ubuntu Settings app and click on Network (or Wi-Fi, then look for the Wired/USB Ethernet section).
-3. Find your USB-C Ethernet adapter connection and click the Gear icon next to it to open its properties.
-4. Go to the IPv4 tab.
-5. Change the IPv4 Method from Automatic (DHCP) to Shared to other computers.
-6. Alternative: If "Shared to other computers" is missing, select Link-Local Only.
-7. Click Apply in the top right corner.
-8. Turn the USB-C Ethernet connection Off and back On using the toggle switch to force Ubuntu to apply the change. 
+### Boot up RPi 4B
+While RPi 4B is powered off, connect the RPi 4B to the laptop using an ethernet cable and an ethernet cable to USB-C adapter if needed. Power up the RPi 4B. First time boot may take a while. Check the green light, it should flash irregularly (means booting up) and then only solid red light (means Pi is idle).
+
+If the green light keeps flashes regularly 7 times followed by a brief pause then try to reboot. It may settle eventually.
+
+### Set up shared network on laptop
+
+1. Open your Ubuntu Settings app and click on Network (or Wi-Fi, then look for the Wired/USB Ethernet section).
+2. Find your USB-C Ethernet adapter connection and click the Gear icon next to it to open its properties.
+3. Go to the IPv4 tab.
+4. Change the IPv4 Method from Automatic (DHCP) to `Shared to other computers`.
+5. Alternative: If `Shared to other computers` is missing, select Link-Local Only.
+6. Click Apply in the top right corner.
+7. Turn the USB-C Ethernet connection Off and back On using the toggle switch to force Ubuntu to apply the change. 
+
+### Find RPi 4B and SSH to it
+
+Connect RPi 4B to laptop with ethernet cable and ethernet network adpater (ethernet to USB-C). Power up RPi 4B. Check that you get a solid red LED. 
+
 
 ```bash
 # list USB devices
@@ -33,16 +44,30 @@ Bus 002 Device 006: ID 0bda:8153 Realtek Semiconductor Corp. RTL8153 Gigabit Eth
 ip neighbor
 ```
 
+Check for device `enx*****` and get IP address.
 ```text
 10.42.0.225 dev enxa0cec815221f lladdr d8:3a:dd:4b:32:fc STALE
 ```
 
+SSH to IP address using the user named defined during the OS imaging process.
 ```bash
 # ssh to RPi 4B
 ssh admin@10.42.0.225 
 ```
 
+Note, if an old ssh key exists in the laptop users configuration then it may need be updated. 
+```bash
+sh-keygen -f ~/.ssh/known_hosts -R 10.42.0.225
+```
+
 Communication now established between laptop and RPi 4B without using WiFi.
+
+Useful for trouble shooting commands.
+
+```bash
+# is Pi pingable
+ping -c 4 10.42.0.225
+```
 
 
 ## Install useful packages
@@ -59,9 +84,9 @@ Python 3 is supplied by the OS; the working system used Python 3.13.5.
 
 ## Install and configure DS3231 RTC module 
 
-The DS3231 RTC module better than DS1307 because temperature-compensated crystal, significantly more precise (±2 ppm). 
+The DS3231 RTC module is better than DS1307 because temperature-compensated crystal, significantly more precise (±2 ppm). 
 
-To install and configure a DS3231 RTC module on a Raspberry Pi 4 Model B running Raspberry Pi OS Lite, you must  
+To install and configure a DS3231 RTC module on a Raspberry Pi 4B running Raspberry Pi OS Lite, you must  
 
 - connect the hardware to the GPIO pins
     - Remove power supply from RPi 4B. Insert the DS3231 RTC module into the first 4 inner side pins of the RPi 4B. Connect RPi 4B to laptop and power back up.

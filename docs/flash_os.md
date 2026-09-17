@@ -1,10 +1,12 @@
 # Flash Raspberry Pi OS Lite to an SD card
 
 ## Windows
-Consult the intenet.
+Download the latest version of the [Raspberry Pi Imager](https://www.raspberrypi.com/software/) and flash `Raspberry Pi OS Lite` to an SD card.
+
 
 ## MacOS
-Consult the intenet.
+Download the latest version of the [Raspberry Pi Imager](https://www.raspberrypi.com/software/) and flash `Raspberry Pi OS Lite` to an SD card.
+
 
 ## Linux (Debian)
 [Raspberry Pi OS Lite (64-bit)](https://www.raspberrypi.com/software/operating-systems/) is a light-weight operating system. It does not include a desktop environment. It boots up in about 25s or so.
