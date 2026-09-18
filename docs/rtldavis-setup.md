@@ -1,4 +1,4 @@
-# rtldavis and WeeWX driver setup
+# rtldavis and WeeWX Setup
 
 This project uses:
 
@@ -108,7 +108,7 @@ The setup involves
 
 ## Install WeeWX
 
-WeeWX is software package for logging weather station data and creating graphs. We will use it for logging data only. For the installation I followed steps from [here](https://www.weewx.com/docs/5.5/quickstarts/debian/).
+WeeWX is software package for logging weather station data and creating graphs. It is used here for data logging only. The following installation precedure is based on this [page](https://www.weewx.com/docs/5.5/quickstarts/debian/).
 
 - Tell your system to trust weewx.com.
     ```bash
@@ -132,15 +132,7 @@ WeeWX is software package for logging weather station data and creating graphs. 
     - Altitude: 63 m
     - Unit system: metricwx
     - Weather station type: Simulation 
-
-    Useful commands for checking that WeeWX is working.
-    ```bash
-    sudo systemctl status weewx   # check status
-    sudo systemctl start weewx    # stop weewx
-    sudo systemctl restart weewx    # restart weewx
-    sudo systemctl stop weewx    # stop weewx
-    sudo journalctl -u weewx   # check system log for weewx
-    ```
+    - do not register the station with WeatherUnderground, can be done later if needed
 
 - Verify WeeWX
 
@@ -156,17 +148,27 @@ WeeWX is software package for logging weather station data and creating graphs. 
     Python 3.13.5
     ```
 
+- Useful commands for checking that WeeWX is working later. At this stage no data are being received yet.
+    ```bash
+    sudo systemctl status weewx   # check status
+    sudo systemctl start weewx    # stop weewx
+    sudo systemctl restart weewx    # restart weewx
+    sudo systemctl stop weewx    # stop weewx
+    sudo journalctl -u weewx   # check system log for weewx
+    ```
+
 
 ## Install rtldavis
 
-The rtldavis project is the implementation of a receiver for Davis wireless weather stations that makes use of RTL-SDR dongles. It was originally coded up by GitHub user [bemasher](https://github.com/bemasher/rtldavis) in 2015. We here use a modified fork of the original from GitHub user [lheijst](https://github.com/lheijst/rtldavis) from around 2019. It is the preferred fork for Davis stations sold in European that transmit at 868.0–868.6 MHz. It incorporates explicit tuning adjustments (-tf and -tr frequency options) required to lock onto shifting EU signals.
+The `rtldavis` project is the implementation of a receiver for Davis wireless weather stations that makes use of RTL-SDR dongles. It was originally coded up by GitHub user [bemasher](https://github.com/bemasher/rtldavis) in 2015. We here use a modified fork of the original from GitHub user [lheijst](https://github.com/lheijst/rtldavis) from around 2019. It is the preferred fork for Davis stations sold in European that transmit at 868.0–868.6 MHz. It incorporates explicit tuning adjustments (-tf and -tr frequency options) required to lock onto shifting EU signals.
 
 The rtldavis installation is in parts based on the instructions from [here](https://www.instructables.com/Davis-Van-ISS-Weather-Station-With-Raspbe/).
 
-- Install packes needed
+- Make sure the following packes are installed
     ```bash
-        sudo apt-get install golang git cmake
+        sudo apt install golang git cmake
     ```
+
 - Install `librtlsdr` from source
     ```bash
     git clone https://github.com/steve-m/librtlsdr.git
@@ -178,6 +180,7 @@ The rtldavis installation is in parts based on the instructions from [here](http
     sudo make install
     sudo ldconfig
     ```
+
 - Add some path to your profile
     ```bash
     sudo nano ~/.profile  
@@ -194,6 +197,7 @@ The rtldavis installation is in parts based on the instructions from [here](http
     ```
 - Get the `rtldavis` package
     ```bash
+    cd    # go back to root of user area
     git clone https://github.com/lheijst/rtldavis
     cd rtldavis
     go mod init github.com/lheijst/rtldavis  # creates temporary go.mod
@@ -201,7 +205,10 @@ The rtldavis installation is in parts based on the instructions from [here](http
     rm -rf vendor
     go mod tidy
     go install -v .     # should not show any errors
-    ~/go/bin/rtldavis -v     # check if the binary works
+    ```
+    Check that the rtldavis binary works. The following command will start the tuner with "emit verbose debug messages" enabled.
+    ```bash
+    ~/bin/rtldavis -v
     ```
 
 
@@ -216,21 +223,27 @@ The rtldavis installation is in parts based on the instructions from [here](http
     ```bash
     sudo nano /etc/weewx/weewx.conf
     ```
-    Add the following lines at the end of the file.
+    Add the following lines at the end of the file. Edit the ISS channel according to your Davis weather station setting.
     ```text
     [Rtldavis]
         # Change this path to match exactly where your compiled rtldavis binary resides
         # pass -tf EU and -tr 64 outside the command as channel and iss_channel
         cmd = /usr/local/bin/rtldavis -gain 40 -fc 50000
 
-        # Let the driver handle the region and your Channel 7 configuration natively
+        # Let the driver handle the region and your Channel 1 configuration natively
         channel = EU
-        iss_channel = 7
+        iss_channel = 1
 
         driver = user.rtldavis
 
     ```
-You may have to move the binary file to `/usr/local/bin/rtldavis`.
+
+- Move the binary file to `/usr/local/bin/rtldavis`.
+    ```bash
+    sudo mv /home/admin/bin/rtldavis /usr/local/bin/rtldavis
+    sudo chown root:root /usr/local/bin/rtldavis
+    sudo chmod 755 /usr/local/bin/rtldavis
+    ```
 
 
 ## Testing frequency hopping and frequency offset
