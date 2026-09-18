@@ -49,7 +49,7 @@ Check for device `enx*****` and get IP address.
 10.42.0.225 dev enxa0cec815221f lladdr d8:3a:dd:4b:32:fc STALE
 ```
 
-SSH to IP address using the user named defined during the OS imaging process.
+SSH to IP address using the user name and password defined during the OS imaging process.
 ```bash
 # ssh to RPi 4B
 ssh admin@10.42.0.225 
@@ -75,8 +75,9 @@ ping -c 4 10.42.0.225
 The `sqlite3` command-line client is useful for inspecting the WeeWX database:
 
 ```bash
-sudo apt update
-sudo apt install sqlite3
+sudo apt update     # update repository listings
+sudo apt upgrade    # make sure verything is up to date
+sudo apt install sqlite3    # install sqlite3
 ```
 
 Python 3 is supplied by the OS; the working system used Python 3.13.5.
@@ -95,7 +96,7 @@ To install and configure a DS3231 RTC module on a Raspberry Pi 4B running Raspbe
     ```bash
     sudo raspi-config
     ```
-    - Navigate Interface Options -> I2C
+    - Interface Options -> I2C
     - Enable ARM I2C
     - Finish
     ```bash
@@ -133,7 +134,7 @@ To install and configure a DS3231 RTC module on a Raspberry Pi 4B running Raspbe
     timedatectl    # check if system time was updated from internet on boot 
     date    # check system time 
     sudo hwclock -w   # Write your accurate system time directly into the DS3231 module 
-    sudo hwclock –r   # Read the time directly back from the hardware clock to verify it was written correctly
+    sudo hwclock -r   # Read the time directly back from the hardware clock to verify it was written correctly
     ```
 
 - Disable the fake hardware clock (turned out to not be installed) 

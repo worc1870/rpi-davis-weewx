@@ -43,9 +43,9 @@ WeeWX 5.5.0
 
 ## Repository contents
 
-- [`docs/hardware.md`](docs/hardware.md) - hardware and station notes
-- [`docs/flash_os.md`](docs/flash_os.md) - flash Raspberry Pi OS Lite (64-bit) to micro SD card
-- [`docs/raspberry-pi-setup.md`](docs/raspberry-pi-setup.md) - Raspberry Pi preparation
+- [`docs/hardware.md`](docs/hardware.md) - Hardware and station notes
+- [`docs/flash_os.md`](docs/flash_os.md) - Flash Raspberry Pi OS Lite (64-bit) to Micro SD Card
+- [`docs/raspberry-pi-setup.md`](docs/raspberry-pi-setup.md) - SSH to RPi_4B, configuration and RTC setup
 - [`docs/rtldavis-setup.md`](docs/rtldavis-setup.md) - rtldavis and WeeWX driver setup
 - [`docs/weewx-setup.md`](docs/weewx-setup.md) - WeeWX configuration and service setup
 - [`docs/csv-logging.md`](docs/csv-logging.md) - CSV logger installation and file format
