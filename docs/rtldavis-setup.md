@@ -390,14 +390,38 @@ Exact sample rate is: 268800.001367 Hz
 ```
 Look for lines like `16:45:55.984126 9000000005003151 8 0 0 0 0 msg.ID=0`. They mean that a packet is received from the ISS.
 
-This now confirms that the RTL-SDR dongle receives the coded packets from the ISS. Next step is to pass those packets on to WeeWX for decoding and saving into a database.
+This now confirms that the SDR dongle receives the coded packets from the ISS. Next step is to pass those packets on to WeeWX for decoding and saving into a database.
 
 
+# A few more permission settings
 
+Create the RTL-SDR Udev Rule
+'''bash
+sudo nano /etc/udev/rules.d/20-rtlsdr.rules
+```
 
+Paste this exact line into the file.
+```text
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0bda", ATTRS{idProduct}=="2838", MODE="0666", GROUP="plugdev"
+```
 
+Add the `weewx` user to the system hardware groups.
+```bash
+sudo usermod -a -G plugdev,adm,dialout weewx
+```
 
+Reload rules and restart the RPi_4B.
+```bash
+sudo udevadm control --reload-rules
+sudo udevadm trigger
+sudo reboot
+```
 
+Start WeeWX and check logs.
+```bash
+sudo systemctl start weewx
+sudo journalctl -u weewx -f
+```
 
 
 

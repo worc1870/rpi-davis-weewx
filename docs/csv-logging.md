@@ -2,37 +2,50 @@
 
 ## Purpose
 
-The CSV logger subscribes to WeeWX archive records and appends one row for each archive interval. It does not decode SDR packets and does not query SQLite. WeeWX provides the completed archive record to the service.
+The CSV logger is completely separate from WeeWX. It is a Python script that runs as a Linux service. WeeWX provides the completed archive record to the service. It subscribes to WeeWX archive records and appends one row for each archive interval.
+
 
 ## Install
 
-Copy the repository's logger to the WeeWX user module directory:
+Copy the the Python file `csvlogger.py` to the RPi_4B. 
+```bash
+scp weewx/csvlogger.py admin@10.42.0.225:
+```
+
+On the RPi_4B move it to the WeeWX user module directory and change permissions.
 
 ```bash
-sudo cp weewx/csvlogger.py /etc/weewx/bin/user/csvlogger.py
+sudo mv csvlogger.py /etc/weewx/bin/user/csvlogger.py
 sudo chown root:root /etc/weewx/bin/user/csvlogger.py
 sudo chmod 644 /etc/weewx/bin/user/csvlogger.py
 ```
 
-Create the CSV directory and make it writable by the account running WeeWX. On the documented installation that account is `weewx`:
+Create the CSV directory and make it writable by the account running WeeWX. On the documented installation that account is `weewx`.
 
 ```bash
 sudo mkdir -p /var/lib/weewx/csv
 sudo chown -R weewx:weewx /var/lib/weewx/csv
 ```
 
+
 ## Configuration
 
-Add:
+Add the following to `/etc/weewx/weewx.conf` just before the `[Engine]` section. 
+
+Edit the output file name convention, timezone and number of decimals as needed.
 
 ```ini
+##############################################################################
+
+#   This section adds the CSVLogger.
+
 [CSVLogger]
     filename = /var/lib/weewx/csv/weather-{year}-{month}.csv
     timezone = Europe/London
     decimals = 3
 ```
 
-and add the service:
+Add the CSVLogger service under the `Engine` section.
 
 ```ini
 [Engine]
@@ -40,13 +53,89 @@ and add the service:
         archive_services = weewx.engine.StdArchive, user.csvlogger.CSVLogger
 ```
 
-Disable the old Cheetah CSV report if present:
 
-```ini
-[[CleanCSV]]
-    skin = CSV
-    enable = false
+## Testing the CSVLogger service
+
+Save the `/etc/weewx/weewx.conf` edits. Reboot RPi_4B.
+```bash
+sudo reboot
 ```
+
+Test if `rtldavis`, `WeeWX` and `CSVLogger` are all working.
+```bash
+/usr/local/bin/rtldavis -tf EU -tr 1 -gain 40 -fc 50000   # check that rtldavis is still receiving coded packets from the ISS
+sudo systemctl start weewx   # start WeeWX
+sudo journalctl -u weewx   # check for error messages
+ls -l /var/lib/weewx/csv/   # check the output file was created
+cat /var/lib/weewx/csv/weather-YYYY-MM.csv   # check file content
+```
+
+Leave WeeWX running for a few minutes. 
+
+
+## Trouble shooting
+
+```bash
+sudo journalctl -u weewx -f
+```
+
+Check for something like the following. The exact log text may vary by version.
+```text
+Loading station type Rtldavis (user.rtldavis)
+driver version is 0.20
+using frequency EU
+using iss_channel 1
+startup process '/usr/local/bin/rtldavis ...'
+```
+
+NOTE: I ran into an issue with clash between US units METRICWX units which lead to a crash of `rtldavis`. The solution was to remove the initially created database. Once WeeWX starts it will create a new clean one.
+```bash
+sudo systemctl stop weewx
+sudo rm /var/lib/weewx/weewx.sdb
+sudo systemctl start weewx
+sudo journalctl -u weewx -f   # check for errors
+``
+
+
+
+
+
+
+## Observations seen in the archive
+
+The working Davis ISS stream populated fields including:
+
+- outTemp
+- outHumidity
+- dewpoint
+- heatindex
+- windchill
+- windSpeed
+- windGust
+- windDir
+- windGustDir
+- windrun
+- rain
+- rainRate
+- radiation
+- UV
+
+The current setup did not populate `pressure`, `barometer`, `altimeter`, or `rxCheckPercent` in the tested archive records.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Monthly rotation
 
