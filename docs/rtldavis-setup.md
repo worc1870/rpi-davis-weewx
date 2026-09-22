@@ -256,112 +256,140 @@ Davis weather station EU/UK models operate in the 868.0–868.6 MHz frequency ba
 ```
 
 Execute a test scan to check if packets are received from the ISS (takes about 20 min).
-- Do NOT us `-tf EU` together with the frequency range settings
 - Use binary codes for setting transmission channel
-- Set gain to 40 manually if needed
+- Set gain to 40 explicitly (default seems to be 0)
 - a step frequency of `50000` may also be used
-```bash
-/usr/local/bin/rtldavis -tr 64 -startfreq 868000000 -endfreq 868700000 -stepfreq 25000
+
+From `https://github.com/lheijst/rtldavis` documentation
+```text
+-tr [transmitters]
+    	code of the stations to listen for: 
+        tr1=1 tr2=2 tr3=4 tr4=8 tr5=16 tr6=32 tr7=64 tr8=128
+        or the Davis syntax (first transmitter ID has value 0):
+        ID 0=1 ID 1=2 ID 2=4 ID 3=8 ID 4=16 ID 5=32 ID 6=64 ID 7=128
+        When two or more transmitters are combined, add the numbers.
+        Example: ID0 and ID2 combined is 1 + 4 => -tr 5
+        
+        Default = -tr 1 (ID 0)
+
+  -tf [tranceiver frequencies]
+        EU or US
+        Default = -tf EU
 ```
+
+Run
+```bash
+/usr/local/bin/rtldavis -tf EU -tr 1 -gain 40 -startfreq 868000000 -endfreq 868700000 -stepfreq 25000
+```
+
+Wait until the test has completed. This will take 10 minutes or so.
+
 Output may look like the following.
 ```text
-10:05:59.559892 rtldavis.go VERSION=0.15
-10:05:59.560125 tr=64 fc=0 ppm=0 gain=0 maxmissed=51 ex=0 receiveWindow=300 actChan=[6] maxChan=1
-10:05:59.560163 undefined=false verbose=false disableAfc=false deviceString=0
-10:05:59.560172 TEST: startFreq=868000000 endFreq=868700000 stepFreq=25000
-10:05:59.562214 BitRate: 19200
-10:05:59.562238 SymbolLength: 14
-10:05:59.562246 SampleRate: 268800
-10:05:59.562254 Preamble: 1100101110001001
-10:05:59.562259 PreambleSymbols: 16
-10:05:59.562265 PreambleLength: 224
-10:05:59.562270 PacketSymbols: 80
-10:05:59.562276 PacketLength: 1120
-10:05:59.562282 BlockSize: 512
-10:05:59.562288 BufferLength: 2048
+16:34:42.500044 rtldavis.go VERSION=0.15
+16:34:42.500620 tr=1 fc=0 ppm=0 gain=40 maxmissed=51 ex=0 receiveWindow=300 actChan=[0] maxChan=1
+16:34:42.500709 undefined=false verbose=false disableAfc=false deviceString=0
+16:34:42.500734 TEST: startFreq=868000000 endFreq=868700000 stepFreq=25000
+16:34:42.501494 BitRate: 19200
+16:34:42.501535 SymbolLength: 14
+16:34:42.501555 SampleRate: 268800
+16:34:42.501573 Preamble: 1100101110001001
+16:34:42.501589 PreambleSymbols: 16
+16:34:42.501606 PreambleLength: 224
+16:34:42.501621 PacketSymbols: 80
+16:34:42.501636 PacketLength: 1120
+16:34:42.501653 BlockSize: 512
+16:34:42.501668 BufferLength: 2048
 Found Rafael Micro R820T tuner
-10:05:59.936856 Hop: {ChannelIdx:0 ChannelFreq:868077250 FreqError:0 Transmitter:0}
+16:34:42.908886 Hop: {ChannelIdx:0 ChannelFreq:868077250 FreqError:0 Transmitter:0}
 Exact sample rate is: 268800.001367 Hz
-10:06:00.061911 GetTunerGain: 0 Db
-10:06:00.061964 SetFreqCorrection 0 ppm Successful
-10:06:00.065518 Init channels: wait max 20 seconds for a message of each transmitter
-10:06:41.192163 TESTFREQ 1: Frequency 868000000: NOK
-10:07:01.755910 TESTFREQ 2: Frequency 868025000: NOK
-10:07:22.319770 TESTFREQ 3: Frequency 868050000: NOK
-10:07:42.883332 TESTFREQ 4: Frequency 868075000: NOK
-10:08:03.447277 TESTFREQ 5: Frequency 868100000: NOK
-10:08:15.727513 TESTFREQ 6: Frequency 868125000 (freqCorr=0): OK, msg.data: A602D9CE2900F2B6
-10:08:36.290624 TESTFREQ 7: Frequency 868150000: NOK
-10:08:56.854212 TESTFREQ 8: Frequency 868175000: NOK
-10:09:17.417901 TESTFREQ 9: Frequency 868200000: NOK
-10:09:37.981643 TESTFREQ 10: Frequency 868225000: NOK
-10:09:52.663495 TESTFREQ 11: Frequency 868250000 (freqCorr=0): OK, msg.data: 8602DD254B0030C7
-10:10:13.227267 TESTFREQ 12: Frequency 868275000: NOK
-10:10:33.790755 TESTFREQ 13: Frequency 868300000: NOK
-10:10:54.354616 TESTFREQ 14: Frequency 868325000: NOK
-10:11:14.918481 TESTFREQ 15: Frequency 868350000: NOK
-10:11:35.482357 TESTFREQ 16: Frequency 868375000: NOK
-10:11:56.045890 TESTFREQ 17: Frequency 868400000: NOK
-10:12:16.609781 TESTFREQ 18: Frequency 868425000: NOK
-10:12:37.173668 TESTFREQ 19: Frequency 868450000: NOK
-10:12:57.737557 TESTFREQ 20: Frequency 868475000: NOK
-10:13:18.301094 TESTFREQ 21: Frequency 868500000: NOK
-10:13:38.864982 TESTFREQ 22: Frequency 868525000: NOK
-10:13:59.428870 TESTFREQ 23: Frequency 868550000: NOK
-10:14:19.992760 TESTFREQ 24: Frequency 868575000: NOK
-10:14:28.788938 TESTFREQ 25: Frequency 868600000 (freqCorr=0): OK, msg.data: 5604FAFF7100779E
-10:14:49.352717 TESTFREQ 26: Frequency 868625000: NOK
-10:15:09.916610 TESTFREQ 27: Frequency 868650000: NOK
-10:15:30.480153 TESTFREQ 28: Frequency 868675000: NOK
-10:15:51.044062 TESTFREQ 29: Frequency 868700000: NOK
-10:15:51.044156 Test reached endfreq; test ended
+16:34:43.046411 Supported tuner gain: 0 Db 9 Db 14 Db 27 Db 37 Db 77 Db 87 Db 125 Db 144 Db 157 Db 166 Db 197 Db 207 Db 229 Db 254 Db 280 Db 297 Db 328 Db 338 Db 364 Db 372 Db 386 Db 402 Db 421 Db 434 Db 439 Db 445 Db 480 Db 496 Db 
+16:34:43.064863 SetTunerGain 40 Successful
+16:34:43.064899 GetTunerGain: 40 Db
+16:34:43.064911 SetFreqCorrection 0 ppm Successful
+16:34:43.068303 Init channels: wait max 17 seconds for a message of each transmitter
+16:35:18.946621 TESTFREQ 1: Frequency 868000000: NOK
+16:35:36.885653 TESTFREQ 2: Frequency 868025000: NOK
+16:35:54.824690 TESTFREQ 3: Frequency 868050000: NOK
+16:36:12.763718 TESTFREQ 4: Frequency 868075000: NOK
+16:36:30.702746 TESTFREQ 5: Frequency 868100000: NOK
+16:36:39.938891 TESTFREQ 6: Frequency 868125000 (freqCorr=0): OK, msg.data: 8000002DCD0070BF
+16:36:57.878122 TESTFREQ 7: Frequency 868150000: NOK
+16:37:15.817151 TESTFREQ 8: Frequency 868175000: NOK
+16:37:33.756190 TESTFREQ 9: Frequency 868200000: NOK
+16:37:51.695201 TESTFREQ 10: Frequency 868225000: NOK
+16:38:04.498937 TESTFREQ 11: Frequency 868250000 (freqCorr=757): OK, msg.data: 4000000085008E7D
+16:38:22.437889 TESTFREQ 12: Frequency 868275000: NOK
+16:38:40.376918 TESTFREQ 13: Frequency 868300000: NOK
+16:38:58.315949 TESTFREQ 14: Frequency 868325000: NOK
+16:39:16.254968 TESTFREQ 15: Frequency 868350000: NOK
+16:39:34.194353 TESTFREQ 16: Frequency 868375000: NOK
+16:39:52.133382 TESTFREQ 17: Frequency 868400000: NOK
+16:40:10.072399 TESTFREQ 18: Frequency 868425000: NOK
+16:40:28.011430 TESTFREQ 19: Frequency 868450000: NOK
+16:40:45.950464 TESTFREQ 20: Frequency 868475000: NOK
+16:41:03.889492 TESTFREQ 21: Frequency 868500000: NOK
+16:41:21.828541 TESTFREQ 22: Frequency 868525000: NOK
+16:41:39.767537 TESTFREQ 23: Frequency 868550000: NOK
+16:41:57.706568 TESTFREQ 24: Frequency 868575000: NOK
+16:42:05.365793 TESTFREQ 25: Frequency 868600000 (freqCorr=924): OK, msg.data: 500000FF7500485B
+16:42:23.304779 TESTFREQ 26: Frequency 868625000: NOK
+16:42:41.243801 TESTFREQ 27: Frequency 868650000: NOK
+16:42:59.182826 TESTFREQ 28: Frequency 868675000: NOK
+16:43:17.121878 TESTFREQ 29: Frequency 868700000: NOK
+16:43:17.122056 Test reached endfreq; test ended
 ```
-Lines like `10:08:15.727513 TESTFREQ 6: Frequency 868125000 (freqCorr=0): OK, msg.data: A602D9CE2900F2B6` mean a coded packet from the ISS is received.
 
-Identify the frequency offset. In my case it was roughly 50000 Hz. It is possible that this is always the case for European stations as it is the same value as found by [guidocioni](https://www.instructables.com/Davis-Van-ISS-Weather-Station-With-Raspbe/).
+Lines like `16:42:05.365793 TESTFREQ 25: Frequency 868600000 (freqCorr=924): OK, msg.data: 500000FF7500485B` mean a coded packet from the ISS is received.
+
+Identify the frequency offset (`-fc` value). In my case it was roughly 50000 Hz. It is possible that this is always the case for European stations as it is the same value as found by [guidocioni](https://www.instructables.com/Davis-Van-ISS-Weather-Station-With-Raspbe/).
 
 Now try use the offset frequency to test if the frequency hopping sequence is recognised and packets can be received every 2.5 seconds.
 ```bash
-/usr/local/bin/rtldavis -tf EU -tr 64 -gain 40 -fc 50000
+/usr/local/bin/rtldavis -tf EU -tr 1 -gain 40 -fc 50000
 ```
 Output may look like the following.
 ```text
-11:17:44.380561 rtldavis.go VERSION=0.15
-11:17:44.381086 tr=64 fc=50000 ppm=0 gain=40 maxmissed=51 ex=0 receiveWindow=300 actChan=[6] maxChan=1
-11:17:44.381226 undefined=false verbose=false disableAfc=false deviceString=0
-11:17:44.381973 BitRate: 19200
-11:17:44.382012 SymbolLength: 14
-11:17:44.382033 SampleRate: 268800
-11:17:44.382058 Preamble: 1100101110001001
-11:17:44.382078 PreambleSymbols: 16
-11:17:44.382095 PreambleLength: 224
-11:17:44.382111 PacketSymbols: 80
-11:17:44.382128 PacketLength: 1120
-11:17:44.382145 BlockSize: 512
-11:17:44.382162 BufferLength: 2048
+16:45:24.826059 rtldavis.go VERSION=0.15
+16:45:24.826615 tr=1 fc=50000 ppm=0 gain=40 maxmissed=51 ex=0 receiveWindow=300 actChan=[0] maxChan=1
+16:45:24.826700 undefined=false verbose=false disableAfc=false deviceString=0
+16:45:24.827572 BitRate: 19200
+16:45:24.827617 SymbolLength: 14
+16:45:24.827635 SampleRate: 268800
+16:45:24.827653 Preamble: 1100101110001001
+16:45:24.827670 PreambleSymbols: 16
+16:45:24.827686 PreambleLength: 224
+16:45:24.827701 PacketSymbols: 80
+16:45:24.827718 PacketLength: 1120
+16:45:24.827735 BlockSize: 512
+16:45:24.827752 BufferLength: 2048
 Found Rafael Micro R820T tuner
-11:17:44.783196 Hop: {ChannelIdx:0 ChannelFreq:868077250 FreqError:0 Transmitter:0}
+16:45:25.232238 Hop: {ChannelIdx:0 ChannelFreq:868077250 FreqError:0 Transmitter:0}
 Exact sample rate is: 268800.001367 Hz
-11:17:44.919263 Supported tuner gain: 0 Db 9 Db 14 Db 27 Db 37 Db 77 Db 87 Db 125 Db 144 Db 157 Db 166 Db 197 Db 207 Db 229 Db 254 Db 280 Db 297 Db 328 Db 338 Db 364 Db 372 Db 386 Db 402 Db 421 Db 434 Db 439 Db 445 Db 480 Db 496 Db
-11:17:44.937479 SetTunerGain 40 Successful
-11:17:44.937540 GetTunerGain: 40 Db
-11:17:44.937553 SetFreqCorrection 0 ppm Successful
-11:17:44.940853 Init channels: wait max 20 seconds for a message of each transmitter
-11:17:46.982529 TRANSMITTER 6 SEEN
-11:17:46.982585 Hop: {ChannelIdx:2 ChannelFreq:868317250 FreqError:0 Transmitter:6}
-11:17:49.921871 8601CD25BB00D673 2 0 0 0 0 msg.ID=6
-11:17:49.921951 Hop: {ChannelIdx:4 ChannelFreq:868557250 FreqError:0 Transmitter:6}
-11:17:52.859061 E602C93F0100D82C 3 0 0 0 0 msg.ID=6
-11:17:52.859168 Hop: {ChannelIdx:1 ChannelFreq:868197250 FreqError:0 Transmitter:6}
-11:17:55.796278 5602D0FF7100E5FE 4 0 0 0 0 msg.ID=6
-11:17:55.796367 Hop: {ChannelIdx:3 ChannelFreq:868437250 FreqError:0 Transmitter:6}
-11:17:58.733300 6602E53103000913 5 0 0 0 0 msg.ID=6
-11:17:58.733377 Hop: {ChannelIdx:0 ChannelFreq:868077250 FreqError:-79 Transmitter:6}
-11:18:02.034087 ID:6 packet missed (1), missed per freq: [1 0 0 0 0]
-11:18:02.034248 Hop: {ChannelIdx:2 ChannelFreq:868317250 FreqError:164 Transmitter:6}
-11:18:04.607566 E602DD3F0100097A 6 0 0 0 0 msg.ID=6
-11:18:04.607644 Hop: {ChannelIdx:4 ChannelFreq:868557250 FreqError:122 Transmitter:6}
+16:45:25.368299 Supported tuner gain: 0 Db 9 Db 14 Db 27 Db 37 Db 77 Db 87 Db 125 Db 144 Db 157 Db 166 Db 197 Db 207 Db 229 Db 254 Db 280 Db 297 Db 328 Db 338 Db 364 Db 372 Db 386 Db 402 Db 421 Db 434 Db 439 Db 445 Db 480 Db 496 Db 
+16:45:25.386523 SetTunerGain 40 Successful
+16:45:25.386557 GetTunerGain: 40 Db
+16:45:25.386568 SetFreqCorrection 0 ppm Successful
+16:45:25.389925 Init channels: wait max 17 seconds for a message of each transmitter
+16:45:38.047266 TRANSMITTER 0 SEEN
+16:45:38.047391 Hop: {ChannelIdx:2 ChannelFreq:868317250 FreqError:0 Transmitter:0}
+16:45:40.609121 500000FF7500485B 2 0 0 0 0 msg.ID=0
+16:45:40.609201 Hop: {ChannelIdx:4 ChannelFreq:868557250 FreqError:0 Transmitter:0}
+16:45:43.171095 8000002DFD00752A 3 0 0 0 0 msg.ID=0
+16:45:43.171180 Hop: {ChannelIdx:1 ChannelFreq:868197250 FreqError:0 Transmitter:0}
+16:45:45.734784 4000000085008E7D 4 0 0 0 0 msg.ID=0
+16:45:45.734888 Hop: {ChannelIdx:3 ChannelFreq:868437250 FreqError:0 Transmitter:0}
+16:45:48.296642 E000008005004F97 5 0 0 0 0 msg.ID=0
+16:45:48.296720 Hop: {ChannelIdx:0 ChannelFreq:868077250 FreqError:93 Transmitter:0}
+16:45:50.858543 500000FF7500485B 6 0 0 0 0 msg.ID=0
+16:45:50.858619 Hop: {ChannelIdx:2 ChannelFreq:868317250 FreqError:399 Transmitter:0}
+16:45:53.420458 8000002DFD00752A 7 0 0 0 0 msg.ID=0
+16:45:53.420553 Hop: {ChannelIdx:4 ChannelFreq:868557250 FreqError:238 Transmitter:0}
+16:45:55.984126 9000000005003151 8 0 0 0 0 msg.ID=0
+16:45:55.984201 Hop: {ChannelIdx:1 ChannelFreq:868197250 FreqError:459 Transmitter:0}
 ```
+Look for lines like `16:45:55.984126 9000000005003151 8 0 0 0 0 msg.ID=0`. They mean that a packet is received from the ISS.
+
 This now confirms that the RTL-SDR dongle receives the coded packets from the ISS. Next step is to pass those packets on to WeeWX for decoding and saving into a database.
 
 
@@ -393,51 +421,3 @@ This now confirms that the RTL-SDR dongle receives the coded packets from the IS
 
 
 
-## rtldavis command
-
-The working configuration as contained in `weewx.conf`:
-
-```ini
-[Rtldavis]
-    cmd = /usr/local/bin/rtldavis -gain 40 -fc 50000
-    channel = EU
-    iss_channel = 7
-    driver = user.rtldavis
-```
-
-The driver starts `rtldavis` and receives the decoded observations for WeeWX.
-
-## Verify decoder operation
-
-Check the WeeWX log for lines similar to:
-
-```text
-Loading station type Rtldavis (user.rtldavis)
-driver version is 0.20
-using frequency EU
-using iss_channel 7
-startup process '/usr/local/bin/rtldavis ...'
-```
-
-The exact log text may vary by version.
-
-## Observations seen in the archive
-
-The working Davis ISS stream populated fields including:
-
-- outTemp
-- outHumidity
-- dewpoint
-- heatindex
-- windchill
-- windSpeed
-- windGust
-- windDir
-- windGustDir
-- windrun
-- rain
-- rainRate
-- radiation
-- UV
-
-The current setup did not populate `pressure`, `barometer`, `altimeter`, or `rxCheckPercent` in the tested archive records.

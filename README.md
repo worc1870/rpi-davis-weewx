@@ -34,7 +34,7 @@ WeeWX 5.5.0
 - SDR decoder: [`lheijst/rtldavis`](https://github.com/lheijst/rtldavis)
 - WeeWX driver: [`lheijst/weewx-rtldavis`](https://github.com/lheijst/weewx-rtldavis)
 - Region: EU
-- ISS channel: 7
+- ISS channel: 1
 - Archive interval: 60 seconds
 - WeeWX database units: METRICWX
 - Database: SQLite
@@ -46,7 +46,7 @@ WeeWX 5.5.0
 - [`docs/hardware.md`](docs/hardware.md) - Hardware and station notes
 - [`docs/flash_os.md`](docs/flash_os.md) - Flash Raspberry Pi OS Lite (64-bit) to Micro SD Card
 - [`docs/raspberry-pi-setup.md`](docs/raspberry-pi-setup.md) - SSH to RPi_4B, configuration and RTC setup
-- [`docs/rtldavis-setup.md`](docs/rtldavis-setup.md) - rtldavis and WeeWX driver setup
+- [`docs/rtldavis-setup.md`](docs/rtldavis-setup.md) - Setup of RTL-SDR Blog Dongle V3 and rtldavis and WeeWX drivers
 - [`docs/weewx-setup.md`](docs/weewx-setup.md) - WeeWX configuration and service setup
 - [`docs/csv-logging.md`](docs/csv-logging.md) - CSV logger installation and file format
 - [`docs/troubleshooting.md`](docs/troubleshooting.md) - common problems encountered during the build
