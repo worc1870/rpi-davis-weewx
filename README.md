@@ -1,6 +1,6 @@
 # Davis ISS -> WeeWX with RTL-SDR on Raspberry Pi Model 4B
 
-A working reference configuration for receiving a Davis Instruments Integrated Sensor Suite (ISS) with an RTL-SDR dongle, decoding it with `rtldavis`, archiving the observations with WeeWX, and writing one-minute observations to monthly CSV files.
+A working reference configuration for receiving data transmissions from a Davis Instruments Integrated Sensor Suite (ISS) using an RTL-SDR dongle, decoding the packets with `rtldavis`, archiving the observations with WeeWX, and writing one-minute observations to monthly CSV files.
 
 ## System overview
 
@@ -85,3 +85,5 @@ This project deliberately does that **before collecting new archive data**. Do n
 This project builds on WeeWX and the work in `rtldavis` and `weewx-rtldavis` by `lheijst`.
 
 The custom CSV service in this repository is intended to sit alongside those projects; it is independed of and does not replace the SDR decoder or WeeWX archiving.
+
+Thanks also got the ChatGPT which helped a lot with the trouble-shooting as well as the development of the `csvlogger.py` script.
