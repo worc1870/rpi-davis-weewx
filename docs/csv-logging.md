@@ -73,6 +73,47 @@ cat /var/lib/weewx/csv/weather-YYYY-MM.csv   # check file content
 Leave WeeWX running for a few minutes. 
 
 
+## Make WeeWX and CSVLogging service start automatically on boot
+
+Because you installed WeeWX v5.5.0, it runs natively as a modern systemd service. This means you do not need to configure WeeWX and the CSVLogger separately; enabling the core WeeWX service automatically loads the CSVLogger plugin along with it on startup.
+
+To configure WeeWX to launch automatically every time your Raspberry Pi boots up, run the following commands.
+
+```bash
+sudo systemctl enable weewx   # registers the application with the system's startup manager
+sudo systemctl is-enabled weewx   # ensure it has been successfully flagged to start at boot, should return "enabled"
+sudo systemctl daemon-reload    # reload the manager configuration
+```
+
+Now reboot RPi_4B, check WeeWX status and output file.
+```bash
+sudo reboot    # reboot RPi_4B and log back in
+sudo systemctl status weewx    # check for "active (running)"
+tail /var/lib/weewx/csv/weather-YYYY-MM.csv   # check file content after a couple of minutes
+```
+
+
+## Some more notes
+
+Files are named by local calendar month:
+
+```text
+weather-2026-09.csv
+weather-2026-10.csv
+weather-2026-11.csv
+```
+
+An existing monthly file is opened in append mode and is not given a second header after a WeeWX restart. If the output file does not exist a new file will be created with file headres.
+
+The current headers are as follows.
+
+```text
+dateTime,dateTimeISO,interval,units,outTemp_C,outHumidity_pct,dewpoint_C,heatindex_C,windchill_C,windSpeed_m_per_s,windGust_m_per_s,windDir_deg,windGustDir_deg,windrun_km,rain_mm,rainRate_mm_per_h,radiation_W_per_m2,UV_index
+```
+
+The naming convention is deliberately ASCII-friendly and avoids `/` characters while still making units explicit.
+
+
 ## Trouble shooting
 
 ```bash
@@ -94,70 +135,12 @@ sudo systemctl stop weewx
 sudo rm /var/lib/weewx/weewx.sdb
 sudo systemctl start weewx
 sudo journalctl -u weewx -f   # check for errors
-``
-
-
-
-
-
-
-## Observations seen in the archive
-
-The working Davis ISS stream populated fields including:
-
-- outTemp
-- outHumidity
-- dewpoint
-- heatindex
-- windchill
-- windSpeed
-- windGust
-- windDir
-- windGustDir
-- windrun
-- rain
-- rainRate
-- radiation
-- UV
+```
 
 The current setup did not populate `pressure`, `barometer`, `altimeter`, or `rxCheckPercent` in the tested archive records.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Monthly rotation
 
-Files are named by local calendar month:
-
-```text
-weather-2026-09.csv
-weather-2026-10.csv
-weather-2026-11.csv
-```
-
-An existing monthly file is opened in append mode and is not given a second header after a WeeWX restart.
-
-## Header
-
-The current header is:
-
-```text
-dateTime,dateTimeISO,interval,units,outTemp_C,outHumidity_pct,dewpoint_C,heatindex_C,windchill_C,windSpeed_m_per_s,windGust_m_per_s,windDir_deg,windGustDir_deg,windrun_km,rain_mm,rainRate_mm_per_h,radiation_W_per_m2,UV_index
-```
-
-The naming convention is deliberately ASCII-friendly and avoids `/` characters while still making units explicit.
 
 ## Verify the output
 
